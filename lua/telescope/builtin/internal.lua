@@ -768,9 +768,9 @@ internal.buffers = function(opts, termonly)
     if opts.cwd_only and not string.find(vim.api.nvim_buf_get_name(b), vim.loop.cwd(), 1, true) then
       return false
     end
-    if termonly and vim.api.nvim_buf_get_options(b, 'buftype') ~= 'terminal' then
+    if termonly and vim.api.nvim_buf_get_option(b, 'buftype') ~= 'terminal' then
       return false
-    elseif opts.exclude_terms and vim.api.nvim_buf_get_options(b, 'buftype') == 'terminal' then
+    elseif opts.exclude_terms and vim.api.nvim_buf_get_option(b, 'buftype') == 'terminal' then
       return false
     end
     return true

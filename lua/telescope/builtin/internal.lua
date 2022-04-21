@@ -768,7 +768,7 @@ internal.buffers = function(opts, termonly)
     if opts.cwd_only and not string.find(vim.api.nvim_buf_get_name(b), vim.loop.cwd(), 1, true) then
       return false
     end
-    if termonly and vim.api.nvim_buf_get_option(b, 'buftype') ~= 'terminal' then
+    if termonly and 'terminal' ~= vim.api.nvim_buf_get_option(b, 'buftype') then
       return false
     elseif opts.exclude_terms and vim.api.nvim_buf_get_option(b, 'buftype') == 'terminal' then
       return false
@@ -812,8 +812,14 @@ internal.buffers = function(opts, termonly)
     opts.bufnr_width = #tostring(max_bufnr)
   end
 
+  local prompt_title = "Buffers"
+
+  if termonly then
+    prompt_title = "Terminals"
+  end
+
   pickers.new(opts, {
-    prompt_title = "Buffers",
+    prompt_title = prompt_title,
     finder = finders.new_table {
       results = buffers,
       entry_maker = opts.entry_maker or make_entry.gen_from_buffer(opts),

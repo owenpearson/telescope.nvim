@@ -752,7 +752,7 @@ internal.reloader = function(opts)
   }):find()
 end
 
-internal.buffers = function(opts)
+internal.buffers = function(opts, termonly)
   opts = apply_cwd_only_aliases(opts)
   local bufnrs = filter(function(b)
     if 1 ~= vim.fn.buflisted(b) then
@@ -766,6 +766,11 @@ internal.buffers = function(opts)
       return false
     end
     if opts.cwd_only and not string.find(vim.api.nvim_buf_get_name(b), vim.loop.cwd(), 1, true) then
+      return false
+    end
+    if termonly and vim.api.nvim_buf_get_options(b, 'buftype') ~= 'terminal' then
+      return false
+    elseif opts.exclude_terms and vim.api.nvim_buf_get_options(b, 'buftype') == 'terminal' then
       return false
     end
     return true
@@ -817,6 +822,10 @@ internal.buffers = function(opts)
     sorter = conf.generic_sorter(opts),
     default_selection_index = default_selection_idx,
   }):find()
+end
+
+internal.terminals = function(opts)
+  internal.buffers(opts, true)
 end
 
 internal.colorscheme = function(opts)
